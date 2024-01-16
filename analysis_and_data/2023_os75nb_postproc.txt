@@ -1,0 +1,261 @@
+LAST CHANGED    : MON JAN  1 06:41:10 UTC 2023
+CRUISE NAME(S)  : TN413
+CRUISE DATES    : 2023/02/24 21:14:47 to 2023/02/24 21:19:55
+SHIP NAME       : unspecified
+PORTS           : unspecified
+CHIEF SCIENTIST : unspecified
+DATABASE NAME   : a_tt
+DATA FILES      : tt2023_054_76485.raw to tt2023_069_72000.raw
+
+STATUS          :  to do                           done
+                  ------                       -----------
+                  averaged                       [     ]
+                  loaded                         [     ]
+
+                  NOTE: heading correction instrument exists
+                        NOTE: time-dependent heading corrections
+                        applied IN the ensembles
+                        (see   cal/rotate/ens_hcorr.ang)
+
+                  check heading correction       [     ]
+                  calibration                    [     ]
+                  edited                         [     ]
+                  re-check heading correction    [     ]
+                  check editing                  [     ]
+                  figures                        [     ]
+
+INSTRUMENT      : os75
+
+ACQUISITION     : 
+     PROGRAM    : uhdas
+     PROCESSING:    : python
+
+LOGGING         : 
+
+     PARAMETERS : BT : bottom track mode (on or off)
+                  SI : sampling interval or averaging period for ensemble (sec)
+                  NB : number of bins
+                  BL : bin length (m)
+                  TD : transducer depth (m)
+                  BK : blanking length (m)
+                  HO : heading offset applied by DAS (deg)
+                  HB : heading bias (deg)
+                  CRPH : compensation for roll-pitch-heading, 1:on, 0:off)
+                  
+                  yy/mm/dd  hh:mm:ss   BT   SI  NB  BL  TD BK     HO     HB CRPH
+                  2023/02/24 21:19:46  off  300  60  16   5  8  59.90   0.00 0001
+
+HEADING         : 
+     PRIMARY    : heading from gyro1
+     CORRECTION : heading correction from posmv5
+                        NOTE: time-dependent heading corrections
+                        applied IN the ensembles
+                        (see   cal/rotate/ens_hcorr.ang)
+
+POSITIONS       : gps positions from posmv5
+
+CALIBRATION     : (check original processing parameters)
+                  additional rotation 0
+                  final transducer angle is:
+                       (original transducer angle) - (rotate_angle)
+                  applied scale factor 1
+                  additional scale factor (none)
+
+COMMENTS        : gaps in heading correction?
+                  scattering layers?
+                  bubbles?
+                  underway bias?
+                  
+PROCESSOR       : I.M. Persistent
+
+
+--- processing parameters ----------
+
+
+## (determined from "sonar"): model = os
+## (determined from "sonar"): frequency = 75
+## (determined from "sonar"): instname = os75
+## (determined from "sonar"): pingtype = nb
+           beamangle   30
+          cruisename   TN413
+            datatype   uhdas
+             ens_len   300
+             fixfile   a_tt.gps
+           frequency   75
+          hcorr_inst   posmv5
+            instname   os75
+               model   os
+            pingtype   nb
+         proc_engine   python
+          ref_method   refsm
+     refuv_smoothwin   3
+        refuv_source   nav
+               sonar   os75nb
+            txy_file   a_tt.agt
+           xducer_dx   -3
+           xducer_dy   7
+            yearbase   2023
+
+===========================================
+Cruise TN413 processing:
+
+Note that the structure of this documentation comes from https://currents.soest.hawaii.edu/docs/adcp_doc/APPENDIX/txtfile_wrappers/km1001c_postproc_os38nb.html#km1001c-postproc-os38nb
+
+The os75nb at-sea processing directory was copied from
+the "proc" directory of the TN413 cruise disk.
+
+All postprocessing is done with full codas+python (i.e. using
+numpy+matplotlib)
+
+(1) Make directory os75nb for post-procssing
+
+- copy proc/os75nb directory from cruise disk
+
+     (i) copy the os75nb directory to "pyproc" and rename to "postproc_os75nb_pre_mask"
+     (ii) make another copy called "preproc_os75nb" for later comparison
+
+- start editing a text file called 2023_os75nb_postproc.txt, with thecontents of os75nb/cruise_info.txt at the top.
+- keep notes down below, and fill in above later
+   Look at the cruise track to see what we're expecting by opening pngs under "png_archive"
+
+(2) check accurate heading device (POSMV):
+- look at figures in cal/rotate *hcorr.png for gaps
+  (gaps would be red "+" signs -- there are none)
+
+conclude: no action needed
+
+
+(3) check calibration:
+
+
+      (a)  look at heading correction: are there gaps? does it need to be patched?
+      (b)  look at watertrack and bottom track calibrations: what can we expect?
+
+
+(a)run this command, then add part (or all) of the
+   record displayed, to the documetation:
+
+      tail -20  cal/watertrk/adcpcal.out 
+--> important info shortcut for the above is catwt.py
+
+
+   **watertrack**  
+-----------
+Number of edited points:  47 out of  56
+
+            median     mean      std
+amplitude   1.0040   1.0041   0.0070
+phase       0.1190   0.1088   0.3528
+-----------
+
+
+
+  ===> look at the watertrack figures
+
+
+ (b) cal/botmtrk/btcaluv.out  (there is no no bottom track data)
+
+
+ - action: watertrack suggests a scale factor and phase shift
+    might be applied after editing 
+
+
+(4) view the data
+
+
+  dataviewer.py
+
+
+(5) 
+
+  - update the navigations steps and redo calibration -- get
+  the directory in line with modern tools and metadata
+
+
+       quick_adcp.py --steps2rerun calib --auto
+
+
+
+
+Now make sure all the edits have been applied and look at the calibration
+
+   quick_adcp.py --steps2rerun apply_edit:navsteps:calib  --auto
+   tail -20 cal/watertrk/adcpcal.out
+
+
+ ADCP watertrack calibration
+##
+ Time range  54.98 to  69.70
+   Calculation done at Mon Jan  1 06:38:51 2024
+   delta-u min = -100.00, max = 100.00
+   delta-v min = -100.00, max = 100.00
+   clip_amp = 0.04,  clip_ph =  3.0
+   clip_dt =   60,  clip_var = 0.050
+Number of edited points:  49 out of  58
+   amp   = 1.0043  + -0.0002 (t -  60.8)
+   phase =   0.11  + 0.0113 (t -  60.8)
+            median     mean      std
+amplitude   1.0040   1.0043   0.0071
+phase       0.1150   0.1078   0.3459
+nav - pc   -2.0000  -1.8571   3.9423
+var         0.0010   0.0013   0.0023
+min var     0.0010   0.0009   0.0015
+delta-u    -0.3300  -0.0390   2.7543
+delta-v    -2.2900  -0.6145   4.9337
+
+
+
+(6) Edit out any bad points or profiles. Edit out times when the ship was stationary. Edit out data beyond -5 to 5 South along 180. Edit out data below 750 meters. Apply threshold editing to reject Error Velocity > 500 mm/s and bins with Percent Good < 80. Use:
+
+
+     dataviewer.py -e
+
+
+Let's look at the watertrack now with catwt.py
+   **watertrack**  
+-----------
+Number of edited points:  49 out of  58
+
+            median     mean      std
+amplitude   1.0040   1.0043   0.0071
+phase       0.1150   0.1078   0.3459
+
+
+(7) Apply final calibration
+
+
+   There are 49 points
+
+ # A scale factor ("amplitude") should be applied because median amplitude is greater than 0.003 from 1:
+
+quick_adcp.py --steps2rerun rotate:apply_edit:navsteps:calib --rotate_amplitude 1.012 --auto
+
+
+ # A phase correction is warranted because the median is greater than 0.1 degrees.
+
+  quick_adcp.py --steps2rerun rotate:apply_edit:navsteps:calib --rotate_angle 0.21 --auto
+
+   **watertrack**  
+-----------
+Number of edited points:   9 out of  15
+
+            median     mean      std
+amplitude   0.9970   1.0026   0.0114
+phase       0.0070   0.2567   1.2205
+
+
+------------
+
+This is much improved. Median and mean amplitudes are less than 0.003 from 1 and phase median is less than 0.01. Mean phase could be elevated due to a strong outlier.
+
+ 
+
+Look at the figures too
+
+ figview.py  cal/watertrk/wtcal1.png
+
+
+
+(6) extract data
+
+  adcp_nc.py adcpdb  contour/os75nb  TN413 os75nb --ship_name Thomas G. Thompson
