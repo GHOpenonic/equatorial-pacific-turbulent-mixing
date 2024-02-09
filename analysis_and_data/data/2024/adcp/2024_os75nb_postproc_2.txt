@@ -1,0 +1,312 @@
+LAST CHANGED    : 2024/02/09 2:24:0
+CRUISE NAME(S)  : TN427
+CRUISE DATES    : 2023/12/30  02:52:09 to 2024/01/06  23:37:09
+SHIP NAME       : unspecified
+PORTS           : unspecified
+CHIEF SCIENTIST : unspecified
+DATABASE NAME   : a_tt
+DATA FILES      : tt2023_363_10028.raw to tt2024_005_79200.raw
+
+STATUS          :  to do                           done
+                  ------                       -----------
+                  averaged                       [     ]
+                  loaded                         [     ]
+
+                  NOTE: heading correction instrument exists
+                        NOTE: time-dependent heading corrections
+                        applied IN the ensembles
+                        (see   cal/rotate/ens_hcorr.ang)
+
+                  check heading correction       [     ]
+                  calibration                    [     ]
+                  edited                         [     ]
+                  re-check heading correction    [     ]
+                  check editing                  [     ]
+                  figures                        [     ]
+
+INSTRUMENT      : os75
+
+ACQUISITION     : 
+     PROGRAM    : uhdas
+     PROCESSING:    : python
+
+LOGGING         : 
+
+     PARAMETERS : BT : bottom track mode (on or off)
+                  SI : sampling interval or averaging period for ensemble (sec)
+                  NB : number of bins
+                  BL : bin length (m)
+                  TD : transducer depth (m)
+                  BK : blanking length (m)
+                  HO : heading offset applied by DAS (deg)
+                  HB : heading bias (deg)
+                  CRPH : compensation for roll-pitch-heading, 1:on, 0:off)
+                  
+                  yy/mm/dd  hh:mm:ss   BT   SI  NB  BL  TD BK     HO     HB CRPH
+                  2023/12/30 02:52:09  off  300  60  16   5  8  59.90   0.00 0001
+
+HEADING         : 
+     PRIMARY    : heading from gyro1
+     CORRECTION : heading correction from posmv5
+                        NOTE: time-dependent heading corrections
+                        applied IN the ensembles
+                        (see   cal/rotate/ens_hcorr.ang)
+
+POSITIONS       : gps positions from posmv5
+
+CALIBRATION     : (check original processing parameters)
+                  (1) transducer alignment
+                      original transducer alignment: 
+                      additional rotation 0
+                      final transducer angle is:
+                           (original transducer angle) - (rotate_angle)
+                  
+                  (2) scale factor
+                      original scale factor 1
+                      additional scale factor (none)
+                  
+                  (3) ADCP (dx=starboard, dy=fwd) meters from GPS
+                    original:        xducer_dx          xducer_dy
+                    correction           -3                 7
+                    final offset          ?                  ?
+                         final = original +  corrections 
+                  
+
+COMMENTS        : gaps in heading correction?
+                  scattering layers?
+                  bubbles?
+                  underway bias?
+                  
+PROCESSOR       : I.M. Persistent
+
+
+--- original processing parameters from dbinfo.txt ----------
+
+<...> NOTE: Replace the text below with the final dbinfo.txt content
+<...>        after you are done with all postprocessing.  Change the
+<...>        comment to say "final processing parameters" 
+
+## (determined from "sonar"): model = os
+## (determined from "sonar"): frequency = 75
+## (determined from "sonar"): instname = os75
+## (determined from "sonar"): pingtype = nb
+           beamangle   30
+          cruisename   TN427
+            datatype   uhdas
+              dbname   a_tt
+             ens_len   300
+             fixfile   a_tt.gps
+           frequency   75
+          hcorr_inst   posmv5
+            instname   os75
+               model   os
+            pingtype   nb
+         proc_engine   python
+          ref_method   refsm
+     refuv_smoothwin   3
+        refuv_source   nav
+               sonar   os75nb
+            txy_file   a_tt.agt
+           xducer_dx   -3
+           xducer_dy   7
+            yearbase   2023
+
+Cruise TN413 processing:
+
+THIS IS THE SECOND CROSSING OF THE EQUATOR
+
+Note that the structure of this documentation comes from https://currents.soest.hawaii.edu/docs/adcp_doc/APPENDIX/txtfile_wrappers/km1001c_postproc_os38nb.html#km1001c-postproc-os38nb
+
+The os75nb at-sea processing directory was copied from
+the "proc" directory of the TN413 cruise disk.
+
+All postprocessing is done with full codas+python (i.e. using
+numpy+matplotlib)
+
+(1) Make directory os75nb for post-procssing
+
+- copy proc/os75nb directory from cruise disk
+
+     (i) copy the os75nb directory to "pyproc_2" and rename to "postproc_os75nb_pre_mask_2"
+     (ii) make another copy called "preproc_os75nb_2" for later comparison
+
+- start editing a text file called 2023_os75nb_postproc_2.txt, with the contents of os75nb/cruise_info.txt at the top.
+- keep notes down below, and fill in above later
+   Look at the cruise track to see what we're expecting by opening pngs under "png_archive"
+
+(2) check accurate heading device (POSMV):
+- look at figures in cal/rotate *hcorr.png for gaps
+  (gaps would be red "+" signs -- there are none)
+
+conclude: no action needed
+
+
+(3) check calibration:
+
+
+      (a)  look at heading correction: are there gaps? does it need to be patched?
+no heading correction
+
+      (b)  look at watertrack and bottom track calibrations: what can we expect?
+May need some adjustment on watertrack; no bottom track.
+
+
+(a)run this command, then add part (or all) of the
+   record displayed, to the documetation:
+
+      tail -20  cal/watertrk/adcpcal.out 
+--> important info shortcut for the above is catwt.py
+
+
+ ADCP watertrack calibration
+##
+ Time range 363.15 to 374.94
+   Calculation done at Wed Jan 10 23:42:26 2024
+   delta-u min = -100.00, max = 100.00
+   delta-v min = -100.00, max = 100.00
+   clip_amp = 0.04,  clip_ph =  3.0
+   clip_dt =   60,  clip_var = 0.050
+Number of edited points:  70 out of  75
+   amp   = 1.0037  + 0.0007 (t - 367.6)
+   phase =   0.09  + 0.0201 (t - 367.6)
+            median     mean      std
+amplitude   1.0040   1.0037   0.0087
+phase       0.0760   0.0925   0.4825
+nav - pc   -1.0000  -0.4000   6.0825
+var         0.0010   0.0018   0.0063
+min var     0.0000   0.0010   0.0021
+delta-u     0.0050  -0.3240   3.6264
+delta-v    -0.2650  -0.1081   4.2234
+
+
+
+
+
+
+  ===> look at the watertrack figures
+
+
+ (b) cal/botmtrk/btcaluv.out  (there is no no bottom track data)
+
+
+ - action: watertrack suggests a scale factor and phase shift
+    might be applied after editing 
+
+
+(4) view the data
+
+
+  dataviewer.py
+
+
+(5) 
+
+  - update the navigations steps and redo calibration -- get
+  the directory in line with modern tools and metadata
+
+
+       quick_adcp.py --steps2rerun calib --auto
+
+
+
+
+Now make sure all the edits have been applied and look at the calibration
+
+   quick_adcp.py --steps2rerun apply_edit:navsteps:calib  --auto
+   tail -20 cal/watertrk/adcpcal.out
+
+
+ ADCP watertrack calibration
+##
+ Time range 363.15 to 374.94
+   Calculation done at Fri Feb  9 22:54:29 2024
+   delta-u min = -100.00, max = 100.00
+   delta-v min = -100.00, max = 100.00
+   clip_amp = 0.04,  clip_ph =  3.0
+   clip_dt =   60,  clip_var = 0.050
+Number of edited points:  70 out of  75
+   amp   = 1.0037  + 0.0006 (t - 367.6)
+   phase =   0.08  + 0.0229 (t - 367.6)
+            median     mean      std
+amplitude   1.0040   1.0037   0.0087
+phase       0.0810   0.0831   0.5060
+nav - pc   -1.0000  -0.3714   6.1365
+var         0.0010   0.0018   0.0063
+min var     0.0000   0.0010   0.0021
+delta-u     0.0050  -0.3239   3.6270
+delta-v    -0.2650  -0.1079   4.2240
+
+
+
+Create new folder 'postproc_os75nb_post_mask_2' and work here.
+
+(6) Edit out any bad points or profiles. Edit out times when the ship was stationary. Edit out data beyond -5 to 5 South along return transect to American Samoa (second equator crossing). Edit out data below 750 meters. Apply threshold editing to reject Error Velocity > 500 mm/s and bins with Percent Good < 80. Use:
+
+
+     dataviewer.py -e
+
+
+Let's look at the watertrack now with catwt.py
+
+   **watertrack**  
+-----------
+Number of edited points:  70 out of  75
+
+            median     mean      std
+amplitude   1.0040   1.0037   0.0087
+phase       0.0810   0.0831   0.5060
+
+
+
+
+(7) Apply final calibration
+
+Make a new folder called 'amp_postproc_os75nb_post_mask_2'
+
+
+   There are 70 points
+
+ # A scale factor ("amplitude") should be applied because median amplitude is greater than 0.003 from 1:
+
+quick_adcp.py --steps2rerun rotate:apply_edit:navsteps:calib --rotate_amplitude 1.006 --auto
+
+   **watertrack**  
+-----------
+Number of edited points:   4 out of   4
+
+            median     mean      std
+amplitude   1.0000   0.9997   0.0022
+phase       0.1395   0.0790   0.1596
+
+
+ # A phase correction is warranted because the median is greater than 0.1 degrees.
+
+Let's make a new folder called 'final_postproc_os75nb_post_mask_2'
+
+and run:
+
+  quick_adcp.py --steps2rerun rotate:apply_edit:navsteps:calib --rotate_angle 0.12 --auto
+
+   **watertrack**  
+-----------
+Number of edited points:   4 out of   4
+
+            median     mean      std
+amplitude   1.0000   0.9997   0.0022
+phase       0.0170  -0.0428   0.1606
+
+
+
+This is much improved. Median and mean amplitudes are less than 0.003 from 1 and phase median is less than 0.1.
+
+ 
+
+Look at the figures too
+
+ figview.py  cal/watertrk/wtcal1.png
+
+
+
+(6) extract data
+
+  adcp_nc.py adcpdb  contour/os75nb  TN427 os75nb --ship_name Thomas G. Thompson
